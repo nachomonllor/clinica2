@@ -32,7 +32,8 @@
               "firebase/app",
               "@angular/common/locales/es",
               "@firebase/component",
-              "lodash"
+              "lodash",
+              "url-join"
             ],
             "assets": [
               "src/favicon.ico",

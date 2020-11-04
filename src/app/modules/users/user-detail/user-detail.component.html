@@ -1,0 +1,107 @@
+<mat-toolbar color="primary">
+  <span>
+    {{ form.controls['id'].value ? 'Modificar Perfil' : 'Nuevo Usuario' }}
+  </span>
+  <span class="fill-remaining-space"></span>
+  <button
+    class="btn-dialog-close"
+    mat-stroked-button
+    routerLink="/users"
+    tabIndex="-1"
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-toolbar>
+<div class="row">
+  <div class="col-12 col-md-8">
+    <form [formGroup]="form" class="normal-form mt-3">
+      <div class="row my-6">
+        <div class="col-12 col-sm-12 col-md-6">
+          <input type="hidden" formControlName="id" />
+          <mat-form-field>
+            <input
+              formControlName="firstname"
+              matInput
+              placeholder="Nombre/s"
+              required
+              autocomplete="off"
+            />
+            <mat-error>El nombre es requerido..</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6">
+          <mat-form-field>
+            <input
+              formControlName="lastname"
+              matInput
+              placeholder="Apellido"
+              required
+              autocomplete="off"
+            />
+            <mat-error>El apellido es requerido..</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row my-6">
+        <div class="col-12 col-sm-12 col-md-6">
+          <mat-form-field>
+            <input
+              formControlName="password"
+              matInput
+              placeholder="Contraseña"
+              type="password"
+              [required]="isRequired"
+              autocomplete="off"
+            />
+            <mat-error>La contraseña es requerida..</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6">
+          <mat-form-field>
+            <input
+              formControlName="confirmPassword"
+              matInput
+              placeholder="Confirmar contraseña"
+              type="password"
+              [required]="isRequired"
+              autocomplete="off"
+            />
+            <mat-error>Debe repetir la contraseña..</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-6">
+          <mat-form-field>
+            <input
+              formControlName="email"
+              matInput
+              placeholder="Email"
+              required
+              autocomplete="off"
+            />
+            <mat-error>El email es requerido..</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6">
+          <mat-form-field>
+            <mat-select
+              formControlName="role"
+              placeholder="Selecciona un Rol"
+              required
+              (selectionChange)="onSelectionChange($event)"
+            >
+              <mat-option value="1">Admin</mat-option>
+              <mat-option value="2">Profesional</mat-option>
+              <mat-option value="3">Paciente</mat-option>
+            </mat-select>
+            <mat-error>requerido</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    
+    </form>
+  </div>
+
+</div>

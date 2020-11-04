@@ -6,8 +6,11 @@
     "paths": {
       "@app/*": ["src/app/*"],
       "@env": ["src/environments/environment"],
+      "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@ls": ["src/app/services/local-storage.service.ts"]
+      "@modules/*": ["src/app/modules/*"],
+      "@ls": ["src/app/core/services/local-storage.service.ts"],
+      "@ss": ["src/app/core/services/session-storage.service.ts"],
     },
     "outDir": "./out-tsc/app",
     "types": []

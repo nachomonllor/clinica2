@@ -1,15 +1,7 @@
 import * as firebase from 'firebase';
-import { USERS } from './db-data';
-const config = {
-  apiKey: 'AIzaSyCJwyVmDALuusfMiUFkeTnJHB8k-t4jl4E',
-  authDomain: 'monllorgame.firebaseapp.com',
-  databaseURL: 'https://monllorgame.firebaseio.com',
-  projectId: 'monllorgame',
-  storageBucket: 'monllorgame.appspot.com',
-  messagingSenderId: '676008548347',
-  appId: '1:676008548347:web:5849cb651142caf277dd5e'
-};
-
+import { USERS, CATEGORIES } from './db-data';
+import { environment } from './src/environments/environment';
+const config = environment.firebase;
 console.log('Uploading data to the database with the following config:\n');
 console.log(JSON.stringify(config));
 
@@ -32,6 +24,12 @@ async function main() {
 }
 
 async function uploadData() {
+ await uploadUsers();
+ await uploadCategories();
+}
+
+
+async function uploadUsers() {
   const users = await db.collection('users');
   for (let user of Object.values(USERS)) {
     const userRef = await users.add(user);
@@ -39,4 +37,10 @@ async function uploadData() {
   }
 }
 
-
+async function uploadCategories() {
+  const categories = await db.collection('categories');
+  for (let category of Object.values(CATEGORIES)) {
+    const categoryRef = await categories.add(category);
+    console.log(`Uploading category ${category['name']}`);
+  }
+}
