@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import urljoin from 'url-join';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserService {
   url: string;
   constructor(

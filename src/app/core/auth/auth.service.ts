@@ -43,16 +43,17 @@ export class AuthService {
   //     );
   // }
   isAuth() {
-    return this.afAuth.authState
-      .pipe(
-        map(fbUser => {
-          if (fbUser) {
-            return true;
-          }
-          this.router.navigate(['/login']);
-          return false;
-        })
-      );
+    return this.afAuth.authState.pipe(map(auth => auth));
+    // return this.afAuth.authState
+    //   .pipe(
+    //     map(fbUser => {
+    //       if (fbUser) {
+    //         return true;
+    //       }
+    //       this.router.navigate(['/login']);
+    //       return false;
+    //     })
+    //   );
   }
 
 }

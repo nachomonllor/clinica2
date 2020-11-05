@@ -14,7 +14,7 @@
 </mat-toolbar>
 <div class="row">
   <div class="col-12 col-md-8">
-    <form [formGroup]="form" class="normal-form mt-3">
+    <form [formGroup]="form" class="normal-form mt-3" (ngSubmit)="onSubmit()">
       <div class="row my-6">
         <div class="col-12 col-sm-12 col-md-6">
           <input type="hidden" formControlName="id" />
@@ -99,8 +99,59 @@
             <mat-error>requerido</mat-error>
           </mat-form-field>
         </div>
+        <hr />
+        <div class="form-group">
+          <h5>Seleccionar image:</h5>
+          <input
+            type="file"
+            accept=".png, .jpg"
+            (change)="onUpload($event)"
+          />
+        </div>
+        <div class="progress">
+          <div
+
+            class="progress-bar progress-bar-striped bg-success"
+            role="progressbar"
+            [style.width]="(uploadPercent | async) + '%'"
+          >
+            <span class="progressText" *ngIf="urlImage | async">
+              Ok!!
+            </span>
+          </div>
+        </div>
+        <br />
+        <input #imageUser type="hidden" [value]="urlImage | async" />
       </div>
-    
+      <div class="row m-t-10">
+        <div class="col-12 col-md-12">
+          <div class="button-row text-right">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="form.invalid"
+              *ngIf="urlImage | async; else btnDisabled"
+            >
+              <mat-icon>save</mat-icon>
+              Guardar
+            </button>
+            <ng-template #btnDisabled>
+              <button
+                mat-raised-button
+                type="submit"
+                disabled="true"
+                
+              >
+                Guardar
+              </button>
+            </ng-template>
+            <button mat-button color="warn" routerLink="/users" >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 

@@ -1,19 +1,15 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as _ from 'lodash';
-import { Subscription, BehaviorSubject } from 'rxjs';
-
+import { Subscription, Observable } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from '../user.service';
 import { validRoles } from '@shared/utils/enums';
-import { MatTableDataSource } from '@angular/material/table';
-import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute } from '@angular/router';
-import { environment } from '@env';
-import Swal from 'sweetalert2';
 import { AuthService } from '@core/auth/auth.service';
-import * as moment from 'moment';
 import { SwalService } from '../../../core/services/swal.service';
 import { User } from '@shared/models/user.model';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
@@ -21,6 +17,7 @@ import { User } from '@shared/models/user.model';
 })
 
 export class UserDetailComponent implements OnInit {
+  @ViewChild('imageUser') inputImageUser: ElementRef;
   url: string;
   isRequired = false;
   displayedColumns: string[] = ['day', 'timeStart', 'timeEnd'];
@@ -31,11 +28,14 @@ export class UserDetailComponent implements OnInit {
   imageUpload: File;
   imageTemp: string | ArrayBuffer;
   form: FormGroup;
-
+  uploadPercent: Observable<number>;
+  urlImage: Observable<string>;
   constructor(
+    private router: Router,
+    private userService: UserService,
+    public authService: AuthService,
     private swalService: SwalService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router
+    private storage: AngularFireStorage
   ) {
     this.form = new FormGroup({
       id: new FormControl(null),
@@ -43,8 +43,7 @@ export class UserDetailComponent implements OnInit {
       lastname: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email]),
       is_verified: new FormControl(false, [Validators.required]),
-      role: new FormControl('1', [Validators.required]),
-     
+      role: new FormControl('1', [Validators.required])
     });
     if (router.url.indexOf('/new') !== -1) {
       this.form.addControl('password', new FormControl(null, Validators.required));
@@ -56,14 +55,23 @@ export class UserDetailComponent implements OnInit {
     }
     this.form.updateValueAndValidity();
     // this.form.get('timeslot').setValue(this.dataSource.data);
-
   }
- 
   onSelectionChange(evt) {
     this.isProfessional = (+evt.value === validRoles.Professional);
   }
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
+  }
+  onUpload(e) {
+    // console.log('subir', e.target.files[0]);
+    const id = Math.random().toString(36).substring(2);
+    const file = e.target.files[0];
+    const filePath = `uploads/profile_${id}`;
+    const ref = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+    this.uploadPercent = task.percentageChanges();
+    task.snapshotChanges()
+      .pipe(finalize(() => this.urlImage = ref.getDownloadURL())).subscribe();
   }
   addTimeSlot(i) {
     return new FormGroup({
@@ -72,23 +80,35 @@ export class UserDetailComponent implements OnInit {
       timeEnd: new FormControl(null)
     });
   }
-  ngOnInit() {
-   
-  }
+  ngOnInit() { }
   onClear() {
     this.form.reset();
   }
 
   onSubmit() {
-
+    // const user = {
+    //   email: this.form.get('email').value,
+    //   password: this.form.get('password').value
+    // };
+    debugger
+    this.authService.registerUser(this.form.value)
+      .then((res) => {
+        this.authService.isAuth().subscribe((user: any) => {
+          if (user) {
+            user.updateProfile({
+              displayName: '',
+              photoURL: this.inputImageUser.nativeElement.value
+            }).then(() => {
+              this.swalService.success('Atención', 'El usuario fue guardado', false, true, 3000);
+              this.router.navigate(['/users']);
+            }).catch((error) => this.swalService.success(':: Error', error, false, true, 3000));
+          }
+        });
+      }).catch(err => console.log('err', err.message));
   }
-
-
-
-
   // changeImage() {
   //   this._userService
-  //     .changeImage(this.imageUpload, !this.userId ? this.form.get('id').value : this._authService.user.id)
+  //     .changeImage(this.imageUpload, !this.userId ? this.form.get('id').value : this.authService.user.id)
   //     .then(() => {
   //       this.imageUpload = null;
   //       Swal.fire(

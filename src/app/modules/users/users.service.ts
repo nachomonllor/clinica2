@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -6,11 +6,15 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '@shared/models/user.model';
 import { convertSnaps } from '../../core/services/db-utils';
+import { AuthService } from '../../core/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
+  @ViewChild('imageUser') inputImageUser: ElementRef;
   constructor(
+    private router: Router,
+    private authService: AuthService,
     private db: AngularFirestore
   ) {
   }
@@ -28,7 +32,7 @@ export class UsersService {
         // });
       })
     );
-
   }
+
 
 }

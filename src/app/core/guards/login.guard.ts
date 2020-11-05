@@ -3,6 +3,7 @@ import { CanActivate, CanActivateChild, CanLoad, ActivatedRouteSnapshot, RouterS
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,14 @@ export class LoginGuard implements CanActivate, CanActivateChild, CanLoad {
     return this.checkLogging();
   }
   checkLogging() {
-    return this.authService.isAuth();
-
+    return this.authService.isAuth().pipe(
+      map(fbUser => {
+        if (fbUser) {
+          return true;
+        }
+        this.router.navigate(['/login']);
+        return false;
+      })
+    );
   }
 }
