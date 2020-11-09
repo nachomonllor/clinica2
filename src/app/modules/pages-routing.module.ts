@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [LoginGuard],
-    component: DashboardComponent
+    component: DashboardComponent,
   },
   {
     path: 'users',
@@ -18,11 +18,15 @@ const routes: Routes = [
     loadChildren: () => import('./users/users.module').then(m => m.UsersModule)
   },
   {
+    path: 'profesional',
+    canActivate: [LoginGuard],
+    loadChildren: () => import('./profesionals/profesionals.module').then(m => m.ProfesionalsModule)
+  },
+  {
     path: 'categories',
     canActivate: [LoginGuard],
     loadChildren: () => import('./categories/categories.module').then(m => m.CategoriesModule)
   },
-
   {
     path: 'quiensoy',
     component: QuienSoyComponent

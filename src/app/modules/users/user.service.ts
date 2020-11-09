@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import urljoin from 'url-join';
+import { User } from '@shared/models/user.model';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -9,8 +13,18 @@ import urljoin from 'url-join';
 export class UserService {
   url: string;
   constructor(
+    private afs: AngularFirestore
   ) {
     // this.url = urljoin(environment.apiUrl, '/api/user');
+  }
+  getUserInfo(id: string): Observable<User> {
+    const userDoc = this.afs.doc<User>(`users/${id}`);
+    return userDoc.snapshotChanges().pipe(map(user => {
+      const data = user.payload.data() as User;
+      data.id = user.payload.id;
+      return data;
+    }));
+
   }
   newUser() {
     // return this.post(this.url, user)

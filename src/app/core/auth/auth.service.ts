@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import * as firebase from 'firebase';
 import { FirebaseAuth } from 'angularfire2';
 import { User } from '@app/shared/models/user.model';
+import { LocalStorageService } from '../services/local-storage.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +15,7 @@ export class AuthService {
   constructor(
     public afs: AngularFirestore,
     public afAuth: AngularFireAuth,
+    private lsService: LocalStorageService,
     private router: Router) {
   }
   loginEmailUser(email, password, remember: boolean = false) {
@@ -28,12 +30,15 @@ export class AuthService {
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
+            role: user.role,
+            is_verified: user.is_verified
           });
           resolve(user);
         }).catch(err => reject(err));
     });
   }
   logout() {
+    this.lsService.remove('role');
     return this.afAuth.auth.signOut();
   }
   // isAuth() {

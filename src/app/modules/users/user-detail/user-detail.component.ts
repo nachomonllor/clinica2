@@ -4,7 +4,6 @@ import * as _ from 'lodash';
 import { Subscription, Observable } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from '../user.service';
-import { validRoles } from '@shared/utils/enums';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
 import { SwalService } from '../../../core/services/swal.service';
@@ -57,7 +56,7 @@ export class UserDetailComponent implements OnInit {
     // this.form.get('timeslot').setValue(this.dataSource.data);
   }
   onSelectionChange(evt) {
-    this.isProfessional = (+evt.value === validRoles.Professional);
+    this.isProfessional = (evt.value === 'profesional');
   }
   ngOnDestroy() {
     this.userSubscription.unsubscribe();

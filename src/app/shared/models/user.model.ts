@@ -8,7 +8,7 @@ export interface User {
   email: string;
   password: string;
   confirmpassword?: string;
-  role: number;
+  role: string;
   active: boolean;
   is_verified: boolean;
   categories?: Category[];

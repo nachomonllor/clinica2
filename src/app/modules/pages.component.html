@@ -3,7 +3,10 @@
     <!-- ============================================================== -->
     <div id="main-wrapper">
       <app-navbar></app-navbar>
-      <app-sidebar></app-sidebar>
+      <app-sidebar-admin *ngIf="role === 'admin'"></app-sidebar-admin>
+      <app-sidebar-profesional *ngIf="role === 'profesional'"></app-sidebar-profesional>
+      <app-sidebar-patient *ngIf="role === 'patient'"></app-sidebar-patient> -->
+
       <!-- ============================================================== -->
       <!-- Page wrapper  -->
       <!-- ============================================================== -->

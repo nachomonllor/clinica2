@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { convertSnaps } from '../../services/db-utils';
+import { User } from '../../../shared/models/user.model';
+import { UserService } from '../../../modules/users/user.service';
+import { LocalStorageService } from '@core/services/local-storage.service';
 declare function init_plugins();
 declare var $: any;
 @Component({
@@ -14,7 +18,9 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   constructor(
     private authService: AuthService,
-    private router: Router
+    private userService: UserService,
+    private router: Router,
+    private lsStorage: LocalStorageService
   ) {
     this.createForms();
   }
@@ -25,7 +31,7 @@ export class LoginComponent implements OnInit {
   }
   createForms() {
     this.form = new FormGroup({
-      email: new FormControl('idevkingos@gmail.com', Validators.required),
+      email: new FormControl('nachomonllor@hotmail.com', Validators.required),
       password: new FormControl('123456', Validators.required),
     });
     // this.form = new FormGroup({
@@ -51,12 +57,19 @@ export class LoginComponent implements OnInit {
       email: this.form.get('email').value,
       password: this.form.get('password').value
     }
-    this.authService.loginEmailUser(user.email, user.password).then(userData => {
-      this.router.navigate(['/dashboard']);
+    this.authService.loginEmailUser(user.email, user.password).then((userData: any) => {
+      //debugger
+      this.userService.getUserInfo(userData.user.uid).subscribe((user: User) => {
+        this.onLoginRedirect(user.role);
+      })
     });
   }
   resolved(captchaResponse: string) {
     this.captchaResponse = captchaResponse;
     console.log(`Resolved response token: ${captchaResponse}`);
+  }
+  onLoginRedirect(role: string): void {
+    this.lsStorage.set('role', role);
+    this.router.navigate(['/dashboard']);
   }
 }

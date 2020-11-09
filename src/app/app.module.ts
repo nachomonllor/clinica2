@@ -18,7 +18,6 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import { MaterialModule } from '@core/material.module';
 
 
-//import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [

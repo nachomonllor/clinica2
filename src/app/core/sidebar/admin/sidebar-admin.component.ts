@@ -3,12 +3,12 @@ import { AuthService } from '@core/auth/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
+  selector: 'app-sidebar-admin',
+  templateUrl: './sidebar-admin.component.html',
   styles: [
   ]
 })
-export class SidebarComponent implements OnInit {
+export class SidebarAdminComponent implements OnInit {
 
   constructor(
     private authService: AuthService,

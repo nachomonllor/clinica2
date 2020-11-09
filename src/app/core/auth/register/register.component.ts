@@ -63,21 +63,40 @@ export class RegisterComponent implements OnInit {
         });
       }).catch(err => console.log('err', err.message));
   }
-  createFormGroup(): void {
-    this.form = new FormGroup({
-      firstname: new FormControl(null, Validators.required),
-      lastname: new FormControl(null, Validators.required),
-      email: new FormControl(null, Validators.required),
-      password: new FormControl(null, Validators.required),
-    });
+  createFormGroup() {
+    this.form = new FormGroup(
+      {
+        firstname: new FormControl(null, Validators.required),
+        lastname: new FormControl(null, Validators.required),
+        email: new FormControl(null, [Validators.required, Validators.email]),
+        password: new FormControl(null, Validators.required),
+        confirmPassword: new FormControl(null, Validators.required),
+        role: new FormControl('paciente', Validators.required),
+      },
+      { validators: this.comparePasswords('password', 'confirmPassword') }
+    );
   }
-
+  comparePasswords(field1: string, field2: string) {
+    // tslint:disable-next-line:no-shadowed-variable
+    return (group: FormGroup) => {
+      let pass1 = group.controls[field1].value;
+      let pass2 = group.controls[field2].value;
+      if (pass1 === pass2) {
+        return null;
+      }
+      return {
+        areEquals: true
+      };
+    };
+  }
   onSubmit() {
-    this.authService.registerUser(this.form.value).then(data => {
+    debugger
+    this.authService.registerUser({...this.form.value, is_verified: false}).then(data => {
       this.swalService.success('Atención', 'El usuario ha sido guardado', false, true, 2000);
+    }).catch(err => {
+      this.swalService.error('Error', err.message, false, true, 2000);
     });
   }
-
   onLoginRedirect(): void {
     this.router.navigate(['/']);
   }

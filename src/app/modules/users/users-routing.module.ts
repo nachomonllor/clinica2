@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { UsersComponent } from './users.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { LoginGuard } from '@core/guards/login.guard';
-import { validRoles } from '@shared/utils/enums';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 
 const routes: Routes = [
@@ -18,7 +17,10 @@ const routes: Routes = [
         component: UserListComponent,
         data: { animation: 'UserListPage' },
       },
-      { path: 'new', component: UserDetailComponent, data: { role: validRoles.Admin, animation: 'UserCreatePage' } },
+      {
+        path: 'new', component: UserDetailComponent,
+        data: { role: 'administrador', animation: 'UserCreatePage' }
+      },
       // { path: ':id', component: UserDetailComponent, data: {animation: 'UserDetailPage'} },
     ]
   }
